@@ -1,0 +1,255 @@
+{
+    "containerDefinitions": [
+        {
+            "volumesFrom": [],
+            "memory": 800,
+            "extraHosts": null,
+            "dnsServers": null,
+            "disableNetworking": null,
+            "dnsSearchDomains": null,
+            "portMappings": [
+                {
+                    "hostPort": 3000,
+                    "containerPort": 3000,
+                    "protocol": "tcp"
+                },
+                {
+                    "hostPort": 3001,
+                    "containerPort": 3001,
+                    "protocol": "tcp"
+                },
+                {
+                    "hostPort": 3002,
+                    "containerPort": 3002,
+                    "protocol": "tcp"
+                }
+            ],
+            "hostname": null,
+            "essential": false,
+            "entryPoint": [],
+            "mountPoints": [
+                {
+                    "containerPath": "/var/www",
+                    "sourceVolume": "www",
+                    "readOnly": false
+                },
+                {
+                    "containerPath": "/home",
+                    "sourceVolume": "node",
+                    "readOnly": false
+                }
+            ],
+            "name": "node",
+            "ulimits": null,
+            "dockerSecurityOptions": null,
+            "environment": [
+                {
+                    "name": "NODE_APP_PATH",
+                    "value": "/var/www/dev.rereca.net/common/node-app"
+                },
+                {
+                    "name": "AFTER_SCRIPT_CMD",
+                    "value": "/sbin/my_init"
+                },
+                {
+                    "name": "NODE_APPS",
+                    "value": "notifications product-stats cashflow"
+                }
+            ],
+            "links": [],
+            "workingDirectory": null,
+            "readonlyRootFilesystem": null,
+            "image": "andreev/node",
+            "command": [
+                "/home/strong.sh"
+            ],
+            "user": null,
+            "dockerLabels": null,
+            "logConfiguration": null,
+            "cpu": 400,
+            "privileged": null
+        },
+        {
+            "volumesFrom": [],
+            "memory": 400,
+            "extraHosts": null,
+            "dnsServers": null,
+            "disableNetworking": null,
+            "dnsSearchDomains": null,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "hostname": null,
+            "essential": true,
+            "entryPoint": [],
+            "mountPoints": [
+                {
+                    "containerPath": "/var/www",
+                    "sourceVolume": "www",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/etc/nginx/sites-available/default",
+                    "sourceVolume": "nginx-default",
+                    "readOnly": true
+                },
+                {
+                    "containerPath": "/etc/nginx/.htpasswd",
+                    "sourceVolume": "nginx-htpasswd",
+                    "readOnly": true
+                }
+            ],
+            "name": "nginx",
+            "ulimits": null,
+            "dockerSecurityOptions": null,
+            "environment": [],
+            "links": [
+                "php",
+                "node"
+            ],
+            "workingDirectory": null,
+            "readonlyRootFilesystem": null,
+            "image": "andreev/nginx",
+            "command": [],
+            "user": null,
+            "dockerLabels": null,
+            "logConfiguration": null,
+            "cpu": 200,
+            "privileged": null
+        },
+        {
+            "volumesFrom": [],
+            "memory": 400,
+            "extraHosts": null,
+            "dnsServers": null,
+            "disableNetworking": null,
+            "dnsSearchDomains": null,
+            "portMappings": [
+                {
+                    "hostPort": 9000,
+                    "containerPort": 9000,
+                    "protocol": "tcp"
+                }
+            ],
+            "hostname": null,
+            "essential": true,
+            "entryPoint": null,
+            "mountPoints": [
+                {
+                    "containerPath": "/var/www",
+                    "sourceVolume": "www",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/etc/php5/fpm/php-fpm.conf",
+                    "sourceVolume": "php-fpm-conf",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/etc/php5/fpm/php.ini",
+                    "sourceVolume": "php-ini",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/var/docker/scripts/start.sh",
+                    "sourceVolume": "php-start-script",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/home/deploy",
+                    "sourceVolume": "php-home-deploy",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/var/docker/share",
+                    "sourceVolume": "docker-share",
+                    "readOnly": null
+                }
+            ],
+            "name": "php",
+            "ulimits": null,
+            "dockerSecurityOptions": null,
+            "environment": [
+                {
+                    "name": "AFTER_SCRIPT_CMD",
+                    "value": "/sbin/my_init -- php5-fpm --nodaemonize"
+                }
+            ],
+            "links": [
+                "node"
+            ],
+            "workingDirectory": null,
+            "readonlyRootFilesystem": null,
+            "image": "andreev/php5-fpm-composer",
+            "command": [
+                "/var/docker/scripts/start.sh"
+            ],
+            "user": null,
+            "dockerLabels": null,
+            "logConfiguration": null,
+            "cpu": 300,
+            "privileged": null
+        }
+    ],
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "/var/www"
+            },
+            "name": "www"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/nginx/default"
+            },
+            "name": "nginx-default"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/nginx/.htpasswd"
+            },
+            "name": "nginx-htpasswd"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/php/php-fpm.conf"
+            },
+            "name": "php-fpm-conf"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/php/php.ini"
+            },
+            "name": "php-ini"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/php/start.sh"
+            },
+            "name": "php-start-script"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/php/home/deploy"
+            },
+            "name": "php-home-deploy"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/node"
+            },
+            "name": "node"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/share"
+            },
+            "name": "docker-share"
+        }
+    ],
+    "family": "rereca"
+}

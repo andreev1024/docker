@@ -1,0 +1,286 @@
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name uslugi;
+    root        /var/www/uslugi/public;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+ server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name rereca;
+    root        /var/www/rereca;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+       # Redirect everything that isn't a real file to index.php
+       try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+       include fastcgi_params;
+       fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+       fastcgi_pass   php:9000;
+       #fastcgi_pass   unix:/var/run/php5-fpm.sock;
+       #fastcgi_pass   127.0.0.1:9000;
+       try_files $uri =404;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name rereca-backend;
+    root        /var/www/rereca/backend;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+       # Redirect everything that isn't a real file to index.php
+       try_files $uri $uri/ /index.php?$args;
+    }
+
+    # uncomment to avoid processing of calls to non-existing static files by Yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
+
+    location ~ \.php$ {
+       include fastcgi_params;
+       fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+       fastcgi_pass   php:9000;
+       #fastcgi_pass unix:/var/run/php5-fpm.sock;
+       #fastcgi_pass   127.0.0.1:9000;
+       try_files $uri =404;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name rereca-api;
+    root        /var/www/rereca/api;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+       # Redirect everything that isn't a real file to index.php
+       try_files $uri $uri/ /index.php?$args;
+    }
+
+    # uncomment to avoid processing of calls to non-existing static files by Yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
+
+    location ~ \.php$ {
+       include fastcgi_params;
+       fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+       fastcgi_pass   php:9000;
+       #fastcgi_pass unix:/var/run/php5-fpm.sock;
+       #fastcgi_pass   127.0.0.1:9000;
+       try_files $uri =404;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name rereca-api-client;
+    root        /var/www/rereca-api-client;
+    index       index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+       # Redirect everything that isn't a real file to index.php
+       try_files $uri $uri/ /index.html?$args;
+    }
+}
+
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name rereca-test;
+    root        /var/www/rereca-test/backend;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+       # Redirect everything that isn't a real file to index.php
+       try_files $uri $uri/ /index.php?$args;
+    }
+
+    # uncomment to avoid processing of calls to non-existing static files by Yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
+
+    location ~ \.php$ {
+       include fastcgi_params;
+       fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+       fastcgi_pass   php:9000;
+       try_files $uri =404;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name test;
+    root        /var/www/test;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+       # Redirect everything that isn't a real file to index.php
+       try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+       include fastcgi_params;
+       fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+       fastcgi_pass   php:9000;
+       try_files $uri =404;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name lara;
+    root        /var/www/lara/public;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}
+
+server {
+    charset utf-8;
+    client_max_body_size 128M;
+
+    listen 80; ## listen for ipv4
+
+    server_name quickstart;
+    root        /var/www/quickstart/public;
+    index       index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(ht|svn|git) {
+       deny all;
+    }
+}

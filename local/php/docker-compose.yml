@@ -1,0 +1,15 @@
+nginx:
+  image: andreev/nginx
+  ports:
+    - "80:80"
+  volumes:
+    - ~/www:/var/www
+    - ./src/nginx/default:/etc/nginx/sites-available/default
+  links:
+    - php
+php:
+  image: andreev/php7-fpm:7.1
+  volumes:
+    - ~/www:/var/www
+  expose:
+    - "9000"

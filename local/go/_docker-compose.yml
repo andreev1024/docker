@@ -1,0 +1,24 @@
+node:
+  image: andreev/node4:ember-local
+  volumes:
+   - ~/www:/var/www # CHANGE IT
+   - ./src/node/init.sh:/var/docker/init.sh
+   - ./src/node/home:/home
+   - ./../../ecs/source/common/.ssh:/home/deploy/.ssh
+  command: "/var/docker/init.sh"
+  working_dir: "/var/www/vvc-user-frontend" # CHANGE IT OR DELETE
+
+mysql:
+  image: sameersbn/mysql
+  volumes:
+   - ./../common/src/mysql/var/lib/mysql:/var/lib/mysql
+   - ./../common/src/mysql/etc/mysql:/etc/mysql
+   - ./../common/src/mysql/dumps:/home
+  environment:
+   - DB_NAME=test
+   - DB_USER=root
+   - DB_PASS=root
+  ports:
+    - "33060:3306"
+  expose:
+    - "3306"

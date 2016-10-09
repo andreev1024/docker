@@ -1,0 +1,32 @@
+nginx:
+  image: andreev/nginx
+  ports:
+    - "80:80"
+  volumes:
+    - ~/www:/var/www
+    - ./src/nginx/default:/etc/nginx/sites-available/default
+  links:
+    - php
+
+php:
+  image: andreev/php5-fpm-composer:dev
+  volumes:
+    - ~/www:/var/www
+    - ./src/php/php-fpm.conf:/etc/php5/fpm/php-fpm.conf
+    - ./src/php/php.ini:/etc/php5/fpm/php.ini
+    - ./src/php/php.ini:/etc/php5/cli/php.ini
+    - ./src/php/start.sh:/var/docker/scripts/start.sh
+    - ./src/php/my_id:/var/docker/scripts/my_id
+    - ./src/php/home/local-user/:/home/local-user
+    - ./../../scripts:/var/docker/common-scripts
+  command: "/var/docker/scripts/start.sh"
+  environment:
+    MY_NAME: "local-user"
+    MY_ID: 1000
+    HOST_IP: "192.168.0.101"
+    HOST_NAMES: "iss-admin test"
+    CUSTOM_CMD: ""
+    AFTER_SCRIPT_CMD: "/sbin/my_init -- php5-fpm --nodaemonize"
+  expose:
+    - "9000"
+

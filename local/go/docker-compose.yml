@@ -1,0 +1,61 @@
+nginx:
+  image: andreev/nginx
+  ports:
+    - "80:80"
+  volumes:
+    - ./src/nginx/default:/etc/nginx/sites-available/default
+    - ~/www:/var/www # CHANGE IT
+  links:
+    - golang
+
+golang:
+  image: andreev/go:aws
+  volumes:
+    - ~/www/golang:/go  # CHANGE IT
+    - ~/.aws/:/root/.aws/  # CHANGE IT
+    - ./src/go/init.sh:/var/docker/init.sh
+    - ./src/go/.bashrc:/root/.bashrc
+  command: "/var/docker/init.sh"
+  working_dir: "/go/src/app" # CHANGE IT OR DELETE
+  links:
+    - mysql
+    - dynamodb
+    - redis
+
+node:
+  image: andreev/node4:ember-local
+  volumes:
+   - ~/www:/var/www # CHANGE IT
+   - ./src/node/init.sh:/var/docker/init.sh
+   - ./src/node/home:/home
+   - ./../../ecs/source/common/.ssh:/home/deploy/.ssh
+  command: "/var/docker/init.sh"
+  working_dir: "/var/www/vvc-user-frontend" # CHANGE IT OR DELETE
+
+mysql:
+  image: sameersbn/mysql
+  #command: "/usr/bin/mysqld_safe --general_log=1 --log_output=FILE --general_log_file='/var/log/mysql/mysql.log'"
+  volumes:
+   - ./../common/src/mysql/var/lib/mysql:/var/lib/mysql
+   - ./../common/src/mysql/etc/mysql:/etc/mysql
+   - ./../common/src/mysql/dumps:/home
+  environment:
+   - DB_NAME=test
+   - DB_USER=root
+   - DB_PASS=root
+  ports:
+    - "33060:3306"
+  expose:
+    - "3306"
+
+dynamodb:
+  image: ryanratcliff/dynamodb
+  volumes:
+    - ~/Code/dynamodb:/opt/dynamodb_local # CHANGE IT
+  ports:
+    - "8000:8000"
+
+redis:
+  image: redis:3.0.7
+  ports:
+    - "6379"

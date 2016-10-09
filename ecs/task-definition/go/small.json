@@ -1,0 +1,190 @@
+{
+    "containerDefinitions": [
+        {
+            "volumesFrom": [],
+            "memory": 500,
+            "extraHosts": null,
+            "dnsServers": null,
+            "disableNetworking": null,
+            "dnsSearchDomains": null,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "hostname": null,
+            "essential": true,
+            "entryPoint": [],
+            "mountPoints": [
+                {
+                    "containerPath": "/etc/nginx/sites-available/default",
+                    "sourceVolume": "nginx-default",
+                    "readOnly": true
+                },
+                {
+                    "containerPath": "/var/www/vvc-user-frontend",
+                    "sourceVolume": "vvc-user-frontend",
+                    "readOnly": true
+                }
+            ],
+            "name": "nginx",
+            "ulimits": null,
+            "dockerSecurityOptions": null,
+            "environment": [],
+            "links": [
+                "golang"
+            ],
+            "workingDirectory": null,
+            "readonlyRootFilesystem": null,
+            "image": "andreev/nginx",
+            "command": [],
+            "user": null,
+            "dockerLabels": null,
+            "logConfiguration": null,
+            "cpu": 200,
+            "privileged": null
+        },
+        {
+            "volumesFrom": [],
+            "memory": 500,
+            "extraHosts": null,
+            "dnsServers": null,
+            "disableNetworking": null,
+            "dnsSearchDomains": null,
+            "portMappings": [],
+            "hostname": null,
+            "essential": true,
+            "entryPoint": null,
+            "mountPoints": [
+                {
+                    "containerPath": "/go/src/app",
+                    "sourceVolume": "go-app-src",
+                    "readOnly": true
+                },
+                {
+                    "containerPath": "/var/docker/init.sh",
+                    "sourceVolume": "go-init",
+                    "readOnly": true
+                },
+                {
+                    "containerPath": "/var/docker/migrate.sh",
+                    "sourceVolume": "migrate",
+                    "readOnly": true
+                },
+                {
+                    "containerPath": "/var/docker/.ssh",
+                    "sourceVolume": "ssh",
+                    "readOnly": true
+                }
+            ],
+            "name": "golang",
+            "ulimits": null,
+            "dockerSecurityOptions": null,
+            "environment": [],
+            "links": [],
+            "workingDirectory": null,
+            "readonlyRootFilesystem": null,
+            "image": "golang:1.5.3",
+            "command": [
+                "/var/docker/init.sh"
+            ],
+            "user": null,
+            "dockerLabels": null,
+            "logConfiguration": null,
+            "cpu": 200,
+            "privileged": null
+        },
+        {
+            "volumesFrom": [],
+            "memory": 900,
+            "extraHosts": null,
+            "dnsServers": null,
+            "disableNetworking": null,
+            "dnsSearchDomains": null,
+            "portMappings": [],
+            "hostname": null,
+            "essential": true,
+            "entryPoint": null,
+            "mountPoints": [
+                {
+                    "containerPath": "/var/www/vvc-user-frontend",
+                    "sourceVolume": "vvc-user-frontend",
+                    "readOnly": null
+                },
+                {
+                    "containerPath": "/var/docker/init.sh",
+                    "sourceVolume": "node-init",
+                    "readOnly": true
+                },
+                {
+                    "containerPath": "/var/docker/.ssh",
+                    "sourceVolume": "ssh",
+                    "readOnly": true
+                }
+            ],
+            "name": "node",
+            "ulimits": null,
+            "dockerSecurityOptions": null,
+            "environment": [],
+            "links": [],
+            "workingDirectory": null,
+            "readonlyRootFilesystem": null,
+            "image": "andreev/node4:ember",
+            "command": [
+                "/var/docker/init.sh"
+            ],
+            "user": null,
+            "dockerLabels": null,
+            "logConfiguration": null,
+            "cpu": 550,
+            "privileged": null
+        }
+    ],
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/nginx/default"
+            },
+            "name": "nginx-default"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/go/init.sh"
+            },
+            "name": "go-init"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/go/migrate.sh"
+            },
+            "name": "migrate"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/node/init.sh"
+            },
+            "name": "node-init"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/go/bitcoin-vvc"
+            },
+            "name": "go-app-src"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/www/vvc-user-frontend"
+            },
+            "name": "vvc-user-frontend"
+        },
+        {
+            "host": {
+                "sourcePath": "/var/docker/src/common/.ssh"
+            },
+            "name": "ssh"
+        }
+    ],
+    "family": "bitcoin-vvc"
+}
